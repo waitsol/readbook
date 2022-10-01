@@ -11,6 +11,8 @@
 #endif // WIN32
 using std::cout;
 using std::endl;
+#define d_cout(x) cout << #x << " " << (x) << endl;
+
 inline int64_t GetTickCountEx()//
 {
 #ifndef WIN32
@@ -25,7 +27,7 @@ inline int64_t GetTickCountEx()//
 
 }
 static int64_t begintime = 0;
-//²»¿ÉÒÔ¶àÏß³ÌÊ¹ÓÃ
+//ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ß³ï¿½Ê¹ï¿½ï¿½
 void ptime()
 {
 	if (begintime == 0)
@@ -37,6 +39,14 @@ void ptime()
 		begintime = 0;
 	}
 }
-
+template<class T>
+void PrintType(T type)
+{
+	int64_t *p = reinterpret_cast<int64_t *>(&type);
+	for (int i=0;i<sizeof(T)/sizeof(int64_t);i++)
+	{
+		d_cout(p[i]);
+	}
+}
 
 #endif

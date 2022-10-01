@@ -12,7 +12,7 @@ public:
 	NRV() {
 		memset(arr, 0, sizeof(double) * 100);
 	}
-	NRV(const NRV& r) {		memcpy(this, &r, sizeof(r));	}
+//	NRV(const NRV& r) {		memcpy(this, &r, sizeof(r));	}
 	double arr[100];
 };
 NRV foo(double val)
