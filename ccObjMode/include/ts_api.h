@@ -1,6 +1,8 @@
 #ifndef __TS_API
 #define __TS_API 1
 #include <iostream>
+#include <stdint.h>
+
 #ifdef WIN32
 #include <Windows.h>
 #else
