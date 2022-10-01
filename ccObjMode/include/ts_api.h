@@ -1,6 +1,8 @@
 #ifndef __TS_API
 #define __TS_API 1
 #include <iostream>
+
+#include <stdint.h>
 #ifdef WIN32
 #include <Windows.h>
 #else
@@ -8,7 +10,7 @@
 #endif // WIN32
 using std::cout;
 using std::endl;
-inline INT64 GetTickCountEx()//
+inline int64_t GetTickCountEx()//
 {
 #ifndef WIN32
 	struct timeval tv;
@@ -21,7 +23,7 @@ inline INT64 GetTickCountEx()//
 #endif // !WIN32
 
 }
-static INT64 begintime = 0;
+static int64_t begintime = 0;
 //不可以多线程使用
 void ptime()
 {
