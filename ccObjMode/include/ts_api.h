@@ -49,4 +49,15 @@ void PrintType(T type)
 	}
 }
 
+void printAddrFunc(void *addr)
+{
+	typedef void(*_func)();
+
+	_func *vptr=reinterpret_cast<_func*>(*static_cast<int64_t*>(addr));
+	if (vptr != nullptr)
+	{
+		vptr[0]();
+	}
+}
+
 #endif
