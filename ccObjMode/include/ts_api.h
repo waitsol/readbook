@@ -10,8 +10,10 @@
 #include <sys/time.h>
 #endif // WIN32
 using std::cout;
+using std::dec;
 using std::endl;
-#define d_cout(x) cout <<dec<< #x << " " << (x) << endl;
+using std::hex;
+#define d_cout(x) cout << dec << #x << " " << (x) << endl;
 #define h_cout(x) cout <<hex<< #x << " " << (x) << endl;
 
 inline int64_t GetTickCountEx()//

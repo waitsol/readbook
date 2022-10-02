@@ -39,6 +39,12 @@ namespace Virtual {
 		{
 			cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
 		}
+#ifndef WIN32
+		virtual void vfBase()
+		{
+			cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
+		}
+#endif
 		int32_t a = 1;
 		int64_t x = 2;
 	};
@@ -58,7 +64,12 @@ namespace Virtual {
 
 		int32_t Bb = 5;
 		int64_t By = 6;
-	
+#ifndef WIN32
+		virtual void vfB()
+		{
+			cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
+		}
+#endif
 	};
 	class vDeviceC : public virtual vbase
 	{
@@ -171,7 +182,7 @@ void testnv();
 int main()
 {
 	//testv();
-	testnv();
+	testv();
 
 	return 0;
 }
@@ -228,6 +239,16 @@ void testv()
 
 	//也可以打印一下vfa 4=2(vptr+vbptr)+2(数据)
 	printAddrFunc(pvd + 4, 1);
+#else
+	//linux下第一个虚函数表是这个子类的表 和vb合并
+	printAddrFunc(pvd, 4);
+	//vc
+	printAddrFunc(pvd + 3, 2);
+
+	//vfa 
+	printAddrFunc(pvd + 6, 1);
+	//段错误,虚函数没有重写不知道为什么4个表都找不到  
+	//printAddrFunc(pvd +11, 1);
 
 #endif // WIN32
 
