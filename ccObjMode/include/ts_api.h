@@ -57,6 +57,7 @@ void printAddrFunc(void *addr)
 	if (vptr != nullptr)
 	{
 		vptr[0]();
+		vptr[1]();
 	}
 }
 

@@ -9,9 +9,9 @@ using namespace std;
 class base
 {
 public:
-	virtual void vf()
+	virtual void vf1()
 	{
-		cout << "vf" << endl;
+		cout << typeid(*this).name() << "  " << __func__ << " " << __LINE__ << endl;
 	}
 	int64_t x = 3;
 	int32_t a = 1;
@@ -25,8 +25,13 @@ public:
 };
 class vbase
 {
-	virtual void vf() {
-		cout<<"vf"<<endl;
+public:
+	virtual void vf1() {
+		cout << typeid(*this).name() << "  " << __func__ << " " << __LINE__ << endl;
+	}
+	virtual void vf2()
+	{
+		cout << typeid(*this).name() << "  " << __func__ << " " << __LINE__ << endl;
 	}
 	int32_t a = 1;
 	int64_t x = 2;
@@ -43,13 +48,27 @@ class vDeviceB : public virtual vbase
 };
 class vDeviceC : public virtual vbase
 {
+public:
 	int32_t Bb = 7;
 	int64_t By = 8;
+	virtual void vf2()
+	{
+		cout << typeid(*this).name() << "  " << __func__ << " " << __LINE__ << endl;
+	}
 };
 class vvDevice : public vDeviceB, public vDeviceA, public vDeviceC
 {
+public:
+	virtual void vf1()
+	{
+		cout << typeid(*this).name() << "  " << __func__ << " " << __LINE__ << endl;
+	}
 	int32_t zb = 9;
 	int64_t zy = 10;
+	virtual void vf3()
+	{
+		cout << typeid(*this).name()<<"  "<<__func__<<" "<<__LINE__<< endl;
+	}
 };
 class testA
 {
@@ -85,6 +104,7 @@ int main()
 	PrintType(vvDevice());
 	vvDevice  vd;
 	int64_t* pvd=reinterpret_cast<int64_t*>(&vd);
+	//虚函数表在这个位置 也就是虚基类数据的前面，本类数据的最后面
 	printAddrFunc(pvd+11);
 
 
