@@ -170,8 +170,8 @@ void testnv();
 
 int main()
 {
-	testv();
-
+	//testv();
+	testnv();
 
 	return 0;
 }
@@ -206,20 +206,31 @@ void testv()
 
 #ifdef WIN32
 	//距离头部的偏移地址 //x86 x64都是int32_t
-	d_cout(*reinterpret_cast<int32_t*>(*(pvd + 1)));
-	//+1是当前地址偏移量
+	d_cout(*reinterpret_cast<int64_t*>(*(pvd + 1)));
+	//+1是当前地址偏移量 这个偏移量指针无论是x64 还是x86都是Int32
 	int dataAddr = *(reinterpret_cast<int32_t*>(*(pvd + 1)));
 	d_cout(dataAddr);
-	//偏移过去应该是虚基表
+	//偏移过去应该是这个类的虚函数表
 	char *phead = reinterpret_cast<char*>(pvd+1);
-
 	//这2个地址一样 
 	printf("reinterpret_cast<int64_t*>(phead + dataAddr) = %p\n", reinterpret_cast<int64_t*>(phead + dataAddr));
 	printAddrFunc(pvd,3); //如果有继承的类有新虚函数 或者子类有新虚函数表  
 	//printAddrFunc(pvd+7);
+
+	//偏移过去应该是虚基表
+	dataAddr = *(reinterpret_cast<int32_t*>(*(pvd + 1))+1);
+	d_cout(dataAddr);
+	phead = reinterpret_cast<char*>(pvd + 1);
+	//这2个地址一样 
+	printf("reinterpret_cast<int64_t*>(phead + dataAddr) = %p\n", reinterpret_cast<int64_t*>(phead + dataAddr));
+	//虚函数表在这个位置 也就是虚基类数据的前面，本类数据的最后面
+	printAddrFunc(pvd + 13, 2);
+
+	//也可以打印一下vfa 4=2(vptr+vbptr)+2(数据)
+	printAddrFunc(pvd + 4, 1);
+
 #endif // WIN32
-		//虚函数表在这个位置 也就是虚基类数据的前面，本类数据的最后面
-	printAddrFunc(pvd + 13,2);
+
 }
 
 void testnv()
@@ -248,6 +259,6 @@ void testnv()
 	int64_t* pvd = reinterpret_cast<int64_t*>(&vd);
 	//虚函数表在这个位置 非虚继承时，派生类新的虚函数直接扩展在基类虚函数表的下面 
 	printAddrFunc(pvd,4); 
-	d_cout(reinterpret_cast<int64_t*>(&vd.Ab))
+	d_cout(reinterpret_cast<int64_t*>(&vd.Ab));
 
 }
