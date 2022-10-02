@@ -11,7 +11,8 @@
 #endif // WIN32
 using std::cout;
 using std::endl;
-#define d_cout(x) cout << #x << " " << (x) << endl;
+#define d_cout(x) cout <<dec<< #x << " " << (x) << endl;
+#define h_cout(x) cout <<hex<< #x << " " << (x) << endl;
 
 inline int64_t GetTickCountEx()//
 {
@@ -49,15 +50,19 @@ void PrintType(T type)
 	}
 }
 
-void printAddrFunc(void *addr)
+void printAddrFunc(void *addr,int c=2)
 {
 	typedef void(*_func)();
-
+	printf("addr = %p\n", addr);
 	_func *vptr=reinterpret_cast<_func*>(*static_cast<int64_t*>(addr));
 	if (vptr != nullptr)
 	{
-		vptr[0]();
-		vptr[1]();
+		for (int i = 0; i < c; i++)
+		{
+
+			vptr[i]();
+		}
+
 	}
 }
 
