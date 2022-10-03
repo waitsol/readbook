@@ -65,7 +65,7 @@ void printAddrFunc(void *addr,int c=2)
 			vptr[i]();
 		}
 
-	}
+	} 
 }
 
 #endif
