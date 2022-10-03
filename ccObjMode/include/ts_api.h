@@ -2,7 +2,6 @@
 #define __TS_API 1
 #include <iostream>
 
-
 #include <stdint.h>
 #ifdef WIN32
 #include <Windows.h>
@@ -10,9 +9,12 @@
 #include <sys/time.h>
 #endif // WIN32
 using std::cout;
+using std::dec;
 using std::endl;
-#define d_cout(x) cout <<dec<< #x << " " << (x) << endl;
+using std::hex;
+#define d_cout(x) cout << dec << #x << " " << (x) << endl;
 #define h_cout(x) cout <<hex<< #x << " " << (x) << endl;
+typedef void (*_func)();
 
 inline int64_t GetTickCountEx()//
 {
@@ -52,7 +54,7 @@ void PrintType(T type)
 
 void printAddrFunc(void *addr,int c=2)
 {
-	typedef void(*_func)();
+
 	printf("addr = %p\n", addr);
 	_func *vptr=reinterpret_cast<_func*>(*static_cast<int64_t*>(addr));
 	if (vptr != nullptr)
