@@ -6,3 +6,4 @@ project(main VERSION 1.0)
 
 add_subdirectory(2)
 add_subdirectory(3)
+add_subdirectory(5)
