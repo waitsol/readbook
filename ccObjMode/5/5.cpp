@@ -14,6 +14,7 @@ public:
 		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
 
 		vfb1();
+		printAddrFunc(reinterpret_cast<int64_t *>(this), 2);
 	}
 	virtual void vfb1()
 	{
@@ -25,6 +26,10 @@ public:
 	}
 	int64_t x = 1;
 	int64_t a = 2;
+	~base1()
+	{
+		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
+	}
 };
 class base2
 {
@@ -39,8 +44,12 @@ public:
 	}
 	int64_t xx = 3;
 	int64_t aaa = 4;
+	~base2()
+	{
+		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
+	}
 };
-class Device : public base1,public base2
+class Device : public base1, public base2
 {
 public:
 	Device()
@@ -48,15 +57,23 @@ public:
 		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
 
 		vfb1();
+		printAddrFunc(reinterpret_cast<int64_t *>(this), 4);
 	}
 	virtual void vfd1()
 	{
 		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
+	
 	}
 
 	virtual void vfb1()
 	{
 		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
+		d_cout(x);
+		d_cout(xx);
+		d_cout(a);
+		d_cout(aaa);
+		d_cout(b);
+		d_cout(y);
 	}
 	virtual void vfb22()
 	{
@@ -66,29 +83,80 @@ public:
 
 	int64_t y = 6;
 };
+class Testxg
+{
+public:
+	~Testxg()
+	{
+		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
+		//然后编译器析构b2 b1
+	}
 
+private:
+	base1 b1;
+	base2 b2;
+};
+class TestCD
+{
+public:
+	TestCD():x(1)
+	{
+		if (idx == 30)
+		{
+			throw;
+		}
+		idx++;
+		cout << "TestCD construction " << idx << endl;
+	}
+	virtual ~TestCD()
+	{
+		cout << "~TestCD deconstruction " << endl;
+	}
+	static int idx;
+	int x;
+};
+class DeviceCD:public TestCD{
+public:
+	DeviceCD():y(0){} 
+	~DeviceCD()
+	{
+		cout << "~DeviceCD deconstruction " << endl;
+	}
+	int y;
+};
+int TestCD::idx = 0;
 int main()
 {
-	Device d;
-	d_cout(sizeof(d));
-	int64_t* pd = reinterpret_cast<int64_t*> (&d);
-	PrintType(d);
-#ifdef  WIN32
-	printAddrFunc(pd, 3); //win下合linux存储不一样
-	printAddrFunc(pd+3, 2);
-#else
-	printAddrFunc(pd, 4);
-	printAddrFunc(pd + 3, 2);
-	//test func
-	base2 *pb2=&d;
-	//true
-	d_cout(reinterpret_cast<char *>(pb2) == reinterpret_cast<char *>(&d)+sizeof(base1))
-	pb2->vfb22();
-#endif //  WIN32
+	// {
+	// 	Device d;
+	// 	Testxg _;
+	// 	//先析构_
+	// }
+	try
+	{
+		TestCD *arr=new TestCD[3];
+		delete []arr;
+	}
+	catch(const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	try
+	{
+		TestCD *arr = new DeviceCD[3];
+		
+		delete[] arr;
 
-	printf("%p\n",(&base1::x));
-	printf("%p\n", (&base1::a));
-
+	}
+	catch (const std::exception &e)
+	{
+		std::cerr << e.what() << '\n';
+	}
+	cout<<endl;
+	{
+		char *p = new char[sizeof(base1)];
+		base1 *pb= new(p)Device;
+		pb->vfb1();
+	}
 	return 0;
 }
-
