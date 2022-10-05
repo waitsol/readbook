@@ -62,7 +62,6 @@ public:
 	virtual void vfd1()
 	{
 		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
-	
 	}
 
 	virtual void vfb1()
@@ -99,7 +98,7 @@ private:
 class TestCD
 {
 public:
-	TestCD():x(1)
+	TestCD() : x(1)
 	{
 		if (idx == 30)
 		{
@@ -115,9 +114,10 @@ public:
 	static int idx;
 	int x;
 };
-class DeviceCD:public TestCD{
+class DeviceCD : public TestCD
+{
 public:
-	DeviceCD():y(0){} 
+	DeviceCD() : y(0) {}
 	~DeviceCD()
 	{
 		cout << "~DeviceCD deconstruction " << endl;
@@ -125,6 +125,54 @@ public:
 	int y;
 };
 int TestCD::idx = 0;
+
+class LiveTime
+{
+public:
+	~LiveTime()
+	{
+		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << ":" << x << endl;
+	}
+	LiveTime(int _x) : x(_x) {}
+
+	LiveTime operator+(const LiveTime &r)
+	{
+		LiveTime t = *this;
+		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
+		t.x += r.x;
+		return t;
+	}
+	operator int()
+	{
+		return 1;
+	}
+	int x;
+};
+void testLiveTime(int x)
+{
+	cout << __func__ << " " << __LINE__ << endl;
+}
+
+void foo(double)
+{
+	cout << __func__ << " " << __LINE__ << endl;
+}
+void foo(int)
+{
+	cout << __func__ << " " << __LINE__ << endl;
+}
+
+template <class T>
+class temClas
+{
+public:
+	T val;
+	void run()
+	{
+		foo(val);
+	}
+};
+
 int main()
 {
 	// {
@@ -134,29 +182,41 @@ int main()
 	// }
 	try
 	{
-		TestCD *arr=new TestCD[3];
-		delete []arr;
+		TestCD *arr = new TestCD[3];
+		delete[] arr;
 	}
-	catch(const std::exception& e)
+	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << '\n';
 	}
 	try
 	{
 		TestCD *arr = new DeviceCD[3];
-		
-		delete[] arr;
 
+		delete[] arr;
 	}
 	catch (const std::exception &e)
 	{
 		std::cerr << e.what() << '\n';
 	}
-	cout<<endl;
+	// cout<<endl;
+	// {
+	// 	char *p = new char[sizeof(base1)];
+	// 	base1 *pb= new(p)Device;
+	// 	pb->vfb1();
+	// }
+
+	LiveTime a = 1, b = 2;
+	testLiveTime(a + b);
 	{
-		char *p = new char[sizeof(base1)];
-		base1 *pb= new(p)Device;
-		pb->vfb1();
+
+		temClas<int> t;
+		t.run();
 	}
+	{
+		temClas<double> t;
+		t.run();
+	}
+
 	return 0;
 }
