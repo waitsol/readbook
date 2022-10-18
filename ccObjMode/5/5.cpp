@@ -57,7 +57,11 @@ public:
 		cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
 
 		vfb1();
+#ifndef WIN32
+
 		printAddrFunc(reinterpret_cast<int64_t *>(this), 4);
+#endif // !WIN32
+
 	}
 	virtual void vfd1()
 	{
