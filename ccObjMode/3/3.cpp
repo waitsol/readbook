@@ -65,7 +65,8 @@ namespace Virtual
 	public:
 		int32_t Bb = 5;
 		int64_t By = 6;
-#ifndef WIN32
+		//没有虚函数  所以win下就没有虚基类表
+#ifdef WIN32
 		virtual void vfB()
 		{
 			cout << typeid(this).name() << "  " << __func__ << " " << __LINE__ << endl;
@@ -252,10 +253,10 @@ void testv()
 	int64_t *pvd = reinterpret_cast<int64_t *>(&vd);
 
 #ifdef WIN32
-	//距离头部的偏移地址 //x86 x64都是int32_t
+	//当前地址距离头部的偏移地址 //x86 x64都是int32_t
 	d_cout(*reinterpret_cast<int64_t *>(*(pvd + 1)));
 	//+1是当前地址偏移量 这个偏移量指针无论是x64 还是x86都是Int32
-	int dataAddr = *(reinterpret_cast<int32_t *>(*(pvd + 1)));
+	int dataAddr = *(reinterpret_cast<int32_t *>(*(pvd + 1) ));
 	d_cout(dataAddr);
 	//偏移过去应该是这个类的虚函数表
 	char *phead = reinterpret_cast<char *>(pvd + 1);
@@ -264,7 +265,7 @@ void testv()
 	printAddrFunc(pvd, 3); //如果有继承的类有新虚函数 或者子类有新虚函数表
 	// printAddrFunc(pvd+7);
 
-	//偏移过去应该是虚基表
+	//下标1是虚基类的数据偏移地址
 	dataAddr = *(reinterpret_cast<int32_t *>(*(pvd + 1)) + 1);
 	d_cout(dataAddr);
 	phead = reinterpret_cast<char *>(pvd + 1);
@@ -273,8 +274,21 @@ void testv()
 	//虚函数表在这个位置 也就是虚基类数据的前面，本类数据的最后面
 	printAddrFunc(pvd + 13, 2);
 
+	
+
+	//第二个类距离虚函数的偏移量
+	dataAddr = *(reinterpret_cast<int32_t *>(*(pvd + 5)));
+	d_cout(dataAddr);
+	if (sizeof(int*) == 8) {
+		printf("reinterpret_cast<char*>(phead + dataAddr) = %p\n", reinterpret_cast<char *>(phead + dataAddr + 4*8));
+	}
 	//也可以打印一下vfa 4=2(vptr+vbptr)+2(数据)
 	printAddrFunc(pvd + 4, 1);
+	dataAddr = *(reinterpret_cast<int32_t *>(*(pvd + 5))+1);
+	d_cout(dataAddr);
+	printf("reinterpret_cast<int64_t*>(phead + dataAddr) = %p\n", reinterpret_cast<int64_t *>(phead + dataAddr));
+	//也可以打印class b(数据) 因为没有新虚函数  所以1会崩溃
+	printAddrFunc(pvd + 8, 0);
 #else
 	// linux下第一个虚函数表是这个子类的表 和vb合并
 	printAddrFunc(pvd, 4);
