@@ -280,7 +280,6 @@ void testv()
 	printAddrFunc(pvd, 4);
 	// vc
 	printAddrFunc(pvd + 3, 2);
-
 	// vfa
 	printAddrFunc(pvd + 6, 1);
 	//段错误,虚函数没有重写不知道为什么4个表都找不到

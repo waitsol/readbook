@@ -175,11 +175,13 @@ public:
 
 int main()
 {
-	// {
-	// 	Device d;
-	// 	Testxg _;
-	// 	//先析构_
-	// }
+	
+	{
+		Device d;
+		Testxg _;
+		PrintType(d);
+		//先析构_
+	}
 	try
 	{
 		TestCD *arr = new TestCD[3];
